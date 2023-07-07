@@ -9,8 +9,7 @@ pipeline {
     stages {
         stage('checkout'){
             steps {
-            // Get some code from a GitHub repository
-             git 'https://github.com/mtulasi41/nexus-s3.git'
+                checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/mtulasi41/nexus-s3.git']])
             }
         }
         stage('Build') {
