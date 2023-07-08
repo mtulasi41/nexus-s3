@@ -1,23 +1,9 @@
 pipeline {
     agent any
-    environment {
-        // nexusRepository = 'maven-snapshots'
-        // groupId = 'com.mkyong'
-        // artifactId = 'counterwebapp'
-        // version = '1.0-SNAPSHOT'
-        // classifier = ''
-        nexus_user = 'admin'
-        nexus_password = 'nexus123'
-        nexusUrl = '13.127.248.17:8081'
-        s3_bucket = "nexusartifacts-s3"
-        AWS_ACCESS_KEY_ID = 'AKIAXAGHLNQS46WROVKK'
-        AWS_SECRET_ACCESS_KEY = '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'
-        }
     tools {
         // Install the Maven version configured as "M3" and add it to the path.
         maven "Maven3.9.3"
     }
-
     stages {
         stage('checkout'){
             steps {
@@ -37,22 +23,5 @@ pipeline {
                 nexusArtifactUploader artifacts: [[artifactId: 'counterwebapp', classifier: '', file: '/var/lib/jenkins/workspace/pipeline-nexus-s3/target/CounterWebApp.war', type: 'WAR']], credentialsId: 'nexus', groupId: 'com.mkyong', nexusUrl: '13.127.248.17:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'maven-snapshots', version: '1.0-SNAPSHOT'
             }          
         }
-        stage('Fetch latest artifact version') {
-            steps {
-                script {
-                    def latestVersion = getLatestArtifactVersion()
-                    echo "Latest artifact version: $latestVersion"
-                    downloadArtifact(latestVersion)
-                }
-            }
-        }
-   }
+    }
 }
-def getLatestArtifactVersion() {
-             def response = sh(script: "curl -s -u $nexus_user:$nexus_password ${nexusUrl}/repository/maven-snapshots/com/mkyong/counterwebapp/1.0-SNAPSHOT/maven-metadata.xml", returnStdout: true)
-             def latestVersion = response.returnStdout =~ "<latest>(.*?)</latest>"
-             return latestVersion[0][1]
-         }
-def downloadArtifact(version) {
-              sh "curl -u $nexus_user:$nexus_password -O ${nexusUrl}/repository/artifact-group/artifact-name/$version/artifact-name-$version.war"
-         }
