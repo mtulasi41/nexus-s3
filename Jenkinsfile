@@ -13,14 +13,6 @@ pipeline {
         AWS_ACCESS_KEY_ID = 'AKIAXAGHLNQS46WROVKK'
         AWS_SECRET_ACCESS_KEY = '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'
         }
-getLatestArtifactVersion() {
-    def response = sh(script: "curl -s -u $nexus_user:$nexus_password ${nexusUrl}/${nexusRepository}/${groupId}/${artifactId}/${version}/${classifier}", returnStdout: true)
-    def latestVersion = response.returnStdout =~ "<latest>(.*?)</latest>"
-    return latestVersion[0][1]
-}
-downloadArtifact(version) {
-    sh "curl -u $nexus_user:$nexus_password -O ${nexusUrl}/${nexusRepository}/${groupId}/${artifactId}/${version}/${artifactId}-$version.war"
-}
     tools {
         // Install the Maven version configured as "M3" and add it to the path.
         maven "Maven3.9.3"
@@ -48,6 +40,14 @@ downloadArtifact(version) {
         stage('Fetch latest artifact version') {
             steps {
                 script {
+                    def getLatestArtifactVersion() {
+                        def response = sh(script: "curl -s -u $nexus_user:$nexus_password ${nexusUrl}/${nexusRepository}/${groupId}/${artifactId}/${version}/${classifier}", returnStdout: true)
+                        def latestVersion = response.returnStdout =~ "<latest>(.*?)</latest>"
+                        return latestVersion[0][1]
+                    }
+                    def downloadArtifact(version) {
+                            sh "curl -u $nexus_user:$nexus_password -O ${nexusUrl}/${nexusRepository}/${groupId}/${artifactId}/${version}/${artifactId}-$version.war"
+                    }
                     def latestVersion = getLatestArtifactVersion()
                     echo "Latest artifact version: $latestVersion"
                     downloadArtifact(latestVersion)
