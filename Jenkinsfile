@@ -40,14 +40,6 @@ pipeline {
         stage('Fetch latest artifact version') {
             steps {
                 script {
-                    def getLatestArtifactVersion() {
-                        def response = sh(script: "curl -s -u $nexus_user:$nexus_password ${nexusUrl}/${nexusRepository}/${groupId}/${artifactId}/${version}/${classifier}", returnStdout: true)
-                        def latestVersion = response.returnStdout =~ "<latest>(.*?)</latest>"
-                        return latestVersion[0][1]
-                    }
-                    def downloadArtifact(version) {
-                            sh "curl -u $nexus_user:$nexus_password -O ${nexusUrl}/${nexusRepository}/${groupId}/${artifactId}/${version}/${artifactId}-$version.war"
-                    }
                     def latestVersion = getLatestArtifactVersion()
                     echo "Latest artifact version: $latestVersion"
                     downloadArtifact(latestVersion)
@@ -55,4 +47,12 @@ pipeline {
             }
         }
    }
+    def getLatestArtifactVersion() {
+             def response = sh(script: "curl -s -u $nexus_user:$nexus_password ${nexusUrl}/${nexusRepository}/${groupId}/${artifactId}/${version}/${classifier}", returnStdout: true)
+             def latestVersion = response.returnStdout =~ "<latest>(.*?)</latest>"
+             return latestVersion[0][1]
+         }
+    def downloadArtifact(version) {
+              sh "curl -u $nexus_user:$nexus_password -O ${nexusUrl}/${nexusRepository}/${groupId}/${artifactId}/${version}/${artifactId}-$version.war"
+         }
 }
