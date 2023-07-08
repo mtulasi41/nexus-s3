@@ -25,5 +25,21 @@ pipeline {
                 nexusArtifactUploader artifacts: [[artifactId: 'counterwebapp', classifier: '', file: '/var/lib/jenkins/workspace/pipeline-nexus-s3/target/CounterWebApp.war', type: 'WAR']], credentialsId: 'nexus', groupId: 'com.mkyong', nexusUrl: '13.127.248.17:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'maven-snapshots', version: '1.0-SNAPSHOT'
             }          
         }
+        stage('Pull Artifacts') {
+            steps {
+                script {
+                    def nexusUrl = '13.127.248.17:8081'
+                    def nexusRepository = 'maven-snapshots'
+                    def groupId = 'com.mkyong'
+                    def artifactId = 'counterwebapp'
+                    def version = '1.0-SNAPSHOT'
+                    def classifier = ''
+                    
+                    def artifactUrl = "${nexusUrl}/repository/${nexusRepository}/${groupId}/${artifactId}/${version}/${artifactId}-${version}-${classifier}.war"
+                    
+                    sh "curl -O ${artifactUrl}"
+                }
+            }
+        }
    }
 }
