@@ -7,20 +7,19 @@ pipeline {
         artifactId = 'counterwebapp'
         version = '1.0-SNAPSHOT'
         classifier = ''
-        NEXUS_USERNAME = 'admin'
-        NEXUS_PASSWORD = 'nexus123'
-        S3_BUCKET = "nexusartifacts-s3"
+        nexus_user = 'admin'
+        nexus_password = 'nexus123'
+        s3_bucket = "nexusartifacts-s3"
         AWS_ACCESS_KEY_ID = 'AKIAXAGHLNQS46WROVKK'
         AWS_SECRET_ACCESS_KEY = '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'
         }
-    
 def getLatestArtifactVersion() {
-    def response = sh(script: "curl -s -u $NEXUS_USERNAME:$NEXUS_PASSWORD ${NEXUS_URL}/${nexusRepository}/${groupId}/${artifactId}/${version}/${classifier}", returnStdout: true)
+    def response = sh(script: "curl -s -u $nexus_user:$nexus_password ${nexusUrl}/${nexusRepository}/${groupId}/${artifactId}/${version}/${classifier}", returnStdout: true)
     def latestVersion = response.returnStdout =~ "<latest>(.*?)</latest>"
     return latestVersion[0][1]
 }
-    def downloadArtifact(version) {
-    sh "curl -u $NEXUS_USERNAME:$-O ${NEXUS_URL}/${nexusRepository}/${groupId}/${artifactId}/${version}/${artifactId}-$version.war"
+def downloadArtifact(version) {
+    sh "curl -u $nexus_user:$nexus_password -O ${nexusUrl}/${nexusRepository}/${groupId}/${artifactId}/${version}/${artifactId}-$version.war"
 }
     tools {
         // Install the Maven version configured as "M3" and add it to the path.
