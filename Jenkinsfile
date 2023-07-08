@@ -1,14 +1,14 @@
 pipeline {
     agent any
     environment {
-        nexusUrl = '13.127.248.17:8081'
-        nexusRepository = 'maven-snapshots'
-        groupId = 'com.mkyong'
-        artifactId = 'counterwebapp'
-        version = '1.0-SNAPSHOT'
-        classifier = ''
-        nexus_user = 'admin'
-        nexus_password = 'nexus123'
+        // nexusUrl = '13.127.248.17:8081'
+        // nexusRepository = 'maven-snapshots'
+        // groupId = 'com.mkyong'
+        // artifactId = 'counterwebapp'
+        // version = '1.0-SNAPSHOT'
+        // classifier = ''
+        // nexus_user = 'admin'
+        // nexus_password = 'nexus123'
         s3_bucket = "nexusartifacts-s3"
         AWS_ACCESS_KEY_ID = 'AKIAXAGHLNQS46WROVKK'
         AWS_SECRET_ACCESS_KEY = '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'
