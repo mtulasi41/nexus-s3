@@ -1,6 +1,24 @@
 pipeline {
     agent any
-
+    environment {
+        nexusUrl = '13.127.248.17:8081'
+        nexusRepository = 'maven-snapshots'
+        groupId = 'com.mkyong'
+        artifactId = 'counterwebapp'
+        version = '1.0-SNAPSHOT'
+        classifier = ''
+        NEXUS_USERNAME = 'admin'
+        NEXUS_PASSWORD = 'nexus123'
+        S3_BUCKET = "nexusartifacts-s3"
+        AWS_ACCESS_KEY_ID = 'AKIAXAGHLNQS46WROVKK'
+        AWS_SECRET_ACCESS_KEY = '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'
+        }
+    
+def getLatestArtifactVersion() {
+    def response = sh(script: "curl -s -u $NEXUS_USERNAME:$NEXUS_PASSWORD ${NEXUS_URL}/${nexusRepository}/${groupId}/${artifactId}/${version}/${classifier}", returnStdout: true)
+    def latestVersion = response.returnStdout =~ "<latest>(.*?)</latest>"
+    return latestVersion[0][1]
+}
     tools {
         // Install the Maven version configured as "M3" and add it to the path.
         maven "Maven3.9.3"
@@ -28,13 +46,8 @@ pipeline {
         stage('Pull Artifacts') {
             steps {
                 script {
-                    def nexusUrl = '13.127.248.17:8081'
-                    def nexusRepository = 'maven-snapshots'
-                    def groupId = 'com.mkyong'
-                    def artifactId = 'counterwebapp'
-                    def version = '1.0-SNAPSHOT'
-                    def classifier = ''
                     
+                                       
                     def artifactUrl = "${nexusUrl}/repository/${nexusRepository}/${groupId}/${artifactId}/${version}/${artifactId}-${version}-${classifier}.war"
                     
                     sh "curl -O ${artifactUrl}"
