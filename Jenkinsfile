@@ -1,11 +1,6 @@
 pipeline {
     agent any
-   // environment {
-     //   NEXUS_URL = "65.2.135.243:8081"  
-    //    NEXUS_USERNAME = 'admin'  
-    //    NEXUS_PASSWORD = 'nexus123'  
-    //}
-    tools {
+     tools {
         // Install the Maven version configured as "M3" and add it to the path.
         maven "Maven3.9.3"
     }
@@ -27,7 +22,7 @@ pipeline {
                 nexusArtifactUploader artifacts: [[artifactId: 'counterwebapp', classifier: '', file: '/var/lib/jenkins/workspace/pipeline-nexus-s3/target/CounterWebApp.war', type: 'war']], credentialsId: 'nexus', groupId: 'com.mkyong', nexusUrl: '65.2.135.243:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'maven-snapshots', version: '1.0-SNAPSHOT'
             }          
         }
-       stage('Pull Artifacts') {
+       stage('Pull Artifacts & Upload S3 bucket') {
             steps {
                 script {
                     def nexusUrl = '65.2.135.243:8081'
