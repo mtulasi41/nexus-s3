@@ -50,7 +50,7 @@ pipeline {
                     sh "aws configure set region ${awsRegion}"
                     
                     // Upload artifact to S3 bucket
-                    sh "aws s3 cp ${artifactId}-${version}-${classifier}.jar s3://${s3Bucket}/${groupId}/${artifactId}/${version}/${artifactId}-${version}-${classifier}.jar"
+                    sh "aws s3 cp ${artifactId}-${version}-${classifier}.war s3://${s3Bucket}/${groupId}/${artifactId}/${version}/${artifactId}-${version}-${classifier}.war"
                   }
             }
         }
