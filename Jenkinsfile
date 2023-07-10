@@ -43,6 +43,14 @@ pipeline {
                     
                     // Download artifact from Nexus
                     sh "curl -O ${artifactUrl}"
+                    
+                    // Configure AWS CLI
+                    sh "aws configure set aws_access_key_id AKIASXYFD7RZ5NJLVD2T"
+                    sh "aws configure set aws_secret_access_key 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"
+                    sh "aws configure set region ${awsRegion}"
+                    
+                    // Upload artifact to S3 bucket
+                    sh "aws s3 cp ${artifactId}-${version}-${classifier}.jar s3://${s3Bucket}/${groupId}/${artifactId}/${version}/${artifactId}-${version}-${classifier}.jar"
                   }
             }
         }
