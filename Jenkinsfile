@@ -42,10 +42,10 @@ pipeline {
                     def latestVersion = sh(returnStdout: true, script: "curl -s -u ${nexusAuth} ${searchUrl} | jq -r '.items[0].version'")
                     
                     // Construct the Nexus artifact URL for the latest version
-                    def artifactUrl = "${NEXUS_URL}/repository/${repository}/${groupId.replace('.', '/')}/${artifactId}/${latestVersion}/${artifactId}-${latestVersion}.jar"
+                    def artifactUrl = "${NEXUS_URL}/repository/${repository}/${groupId.replace('.', '/')}/${artifactId}/${latestVersion}/${artifactId}-${latestVersion}.war"
                     
                     // Pull the latest artifact using curl
-                    sh "curl -u ${nexusAuth} -o ${artifactId}-${latestVersion}.jar ${artifactUrl}"
+                    sh "curl -u ${nexusAuth} -o ${artifactId}-${latestVersion}.war ${artifactUrl}"
                 }
             }
         }
